@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap');
+
+/* ── Base ── */
+.lamp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #12131a;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.7s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Flash overlay ── */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 230, 100, 1);
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+}
+
+/* ── Wire ── */
+.wire {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 60px;
+  background: linear-gradient(to bottom, #555, #3a3d50);
+  border-radius: 2px;
+  z-index: 9;
+}
+
+/* ── Lamp shade ── */
+.lamp {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 55px solid transparent;
+  border-right: 55px solid transparent;
+  border-top: 70px solid #2a2d40;
+  z-index: 10;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+}
+
+/* Gold rim on lamp */
+.lamp::after {
+  content: '';
+  position: absolute;
+  top: -74px;
+  left: -55px;
+  width: 110px;
+  height: 8px;
+  background: #f5b800;
+  border-radius: 2px;
+}
+
+/* ── Bulb ── */
+.bulb {
+  position: absolute;
+  top: 118px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  background: #555;
+  border-radius: 50%;
+  z-index: 8;
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.lamp-container.light-on .bulb {
+  background: #ffe680;
+  box-shadow:
+    0 0 18px 8px rgba(255, 230, 100, 0.7),
+    0 0 40px 20px rgba(245, 184, 0, 0.3);
+}
+
+/* ── Light beam ── */
+.light-beam {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 180px solid transparent;
+  border-right: 180px solid transparent;
+  border-top: 300px solid rgba(245, 184, 0, 0);
+  transition: border-top-color 0.7s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lamp-container.light-on .light-beam {
+  border-top-color: rgba(245, 184, 0, 0.07);
+}
+
+/* ── Cord ── */
+.cord-wrapper {
+  position: absolute;
+  top: 140px; /* Right below the bulb */
+  left: 50%; /* Centered horizontally */
+  transform: translateX(-50%);
+  z-index: 11;
+  cursor: pointer;
+  transform-origin: top center;
+}
+
+.cord {
+  width: 3px;
+  height: 40px; /* Shortened */
+  background: linear-gradient(to bottom, #888, #aaa);
+  border-radius: 2px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.cord-pull {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle at 40% 35%, #ff6b5b, #c0392b);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.5);
+  transition: box-shadow 0.2s;
+}
+
+.cord-pull:hover {
+  box-shadow: 0 2px 14px rgba(231, 76, 60, 0.75);
+}
+
+/* Tooltip */
+.cord-tooltip {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 32, 48, 0.95);
+  color: #7a7d9a;
+  font-size: 0.68rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  border: 1px solid #2e3048;
+}
+
+.cord-wrapper:hover .cord-tooltip {
+  opacity: 1;
+}
+
+/* ── Form Card ── */
+.login-form-container {
+  position: relative;
+  z-index: 15;
+  background: #1e2030;
+  border: 1px solid #2e3048;
+  padding: 40px 36px 36px;
+  border-radius: 20px;
+  width: 360px;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5);
+  color: #e8e9f0;
+  margin-top: 120px;
+  transition: box-shadow 0.7s ease;
+}
+
+.lamp-container.light-on .login-form-container {
+  box-shadow:
+    0 8px 48px rgba(0, 0, 0, 0.4),
+    0 0 80px 10px rgba(245, 184, 0, 0.06);
+}
+
+.login-form-container h2 {
+  text-align: center;
+  margin-bottom: 6px;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: #e8e9f0;
+  letter-spacing: 0.01em;
+}
+
+/* Hint text */
+.hint-text {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #7a7d9a;
+  margin-bottom: 24px;
+  letter-spacing: 0.01em;
+}
+
+/* ── Inputs ── */
+.input-group {
+  margin-bottom: 14px;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid #2e3048;
+  background: #272a3f;
+  color: #e8e9f0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.input-group input::placeholder {
+  color: #7a7d9a;
+}
+
+.input-group select option {
+  background: #1e2030;
+  color: #e8e9f0;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #f5b800;
+  background: #2d3050;
+}
+
+/* ── Button ── */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: #f5b800;
+  color: #1a1200;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 0.04em;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 18px rgba(245, 184, 0, 0.25);
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: #ffc700;
+  box-shadow: 0 4px 26px rgba(245, 184, 0, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Toggle link ── */
+.toggle-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.83rem;
+  color: #7a7d9a;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toggle-link:hover {
+  color: #f5b800;
+  text-decoration: underline;
+}

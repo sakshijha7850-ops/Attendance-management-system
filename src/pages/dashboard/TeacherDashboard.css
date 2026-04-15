@@ -1,0 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+.dashboard-container {
+  min-height: 100vh;
+  background: #0f172a;
+  color: #f8fafc;
+  font-family: 'Poppins', sans-serif;
+  padding: 40px 20px;
+}
+
+.dashboard-card {
+  margin: 0 auto;
+  max-width: 900px;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.dashboard-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.logout-btn:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+  transform: translateY(-2px);
+}
+
+.date-picker-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.date-picker-section label {
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.date-picker-section input[type="date"],
+.date-picker-section select {
+  background: rgba(255, 255, 255, 0.15); /* Brightened */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #f8fafc;
+  padding: 10px 15px;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+
+.date-picker-section input[type="date"]:focus,
+.date-picker-section select:focus {
+  border-color: #fbbf24;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Force dropdown options to be readable (black text on white background) */
+option {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.student-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 16px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.student-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(5px);
+}
+
+.student-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #f1f5f9;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-present {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.btn-present.active, .btn-present:hover {
+  background: #22c55e;
+  color: white;
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+.btn-absent {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.btn-absent.active, .btn-absent:hover {
+  background: #ef4444;
+  color: white;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+.btn-late {
+  background: rgba(234, 179, 8, 0.1);
+  color: #fde047;
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.btn-late.active, .btn-late:hover {
+  background: #eab308;
+  color: white;
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+}
+
+.submit-attendance-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(217, 119, 6, 0.3);
+  transition: all 0.3s;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.submit-attendance-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px rgba(217, 119, 6, 0.4);
+}
+
+.submit-attendance-btn:active {
+  transform: translateY(1px);
+}
+
+/* Add Student Form Styles */
+.add-student-form {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-grid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.add-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.15); /* Brightened */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #f8fafc;
+  padding: 12px 15px;
+  border-radius: 8px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.3s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.add-input:focus {
+  border-color: #3b82f6;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.add-input::placeholder {
+  color: #64748b;
+}
+
+.add-input.error-border {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+}
+
+.submit-student-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-student-btn:hover {
+  background: #2563eb;
+}
+
+/* Light Mode Overrides for Form */
+.light .add-student-form {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.light .add-student-form h3 {
+  color: #0f172a !important;
+}
+
+.light .add-input {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.light .add-input:focus {
+  border-color: #3b82f6;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 20px 12px;
+  }
+  
+  .dashboard-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.8rem;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .date-picker-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .date-picker-section label {
+    margin-bottom: 4px;
+  }
+  
+  .date-picker-section input[type="date"],
+  .date-picker-section select {
+    padding: 12px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .student-list {
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+  
+  .student-item {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .student-info {
+    margin-bottom: 12px;
+  }
+  
+  .student-name {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  
+  .student-details {
+    font-size: 14px;
+    gap: 12px;
+  }
+  
+  .attendance-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .attendance-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .add-student-form {
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .add-student-form h3 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+  }
+  
+  .form-grid {
+    gap: 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  
+  .add-input {
+    padding: 12px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .submit-student-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 16px 8px;
+  }
+  
+  .dashboard-card {
+    padding: 16px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+  
+  .student-item {
+    padding: 12px;
+  }
+  
+  .add-student-form {
+    padding: 16px;
+  }
+  
+  .add-student-form h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Pulse Animation for Auto-Selection */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
