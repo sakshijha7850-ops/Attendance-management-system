@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [name, setName] = useState('');
+  const [batch, setBatch] = useState('');
   const [lightOn, setLightOn] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetToken, setResetToken] = useState('');
@@ -110,7 +111,7 @@ export default function LoginPage() {
       }
     } else {
       console.log('Attempting registration...');
-      const res = await register(name, email, password); // Role & Batch assigned by backend Allowlist
+      const res = await register(name, email, password, 'teacher', batch); // Pass teacher role and batch
       console.log('Registration response:', res);
       if (res.success) {
         toast.success('Account created successfully');
@@ -126,44 +127,40 @@ export default function LoginPage() {
 
   const navigateDashboard = () => {
     console.log('Attempting to navigate to dashboard...');
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    console.log('User info from localStorage:', userInfo);
     
-    if (!userInfo) {
-      console.error('No user info found in localStorage');
-      toast.error('Login failed - no user data found');
-      return;
-    }
-    
-    if (!userInfo.role) {
-      console.error('No role found in user info');
-      toast.error('Login failed - no role assigned');
-      return;
-    }
-    
-    console.log('User role:', userInfo.role);
-    
-    // Try navigation with multiple approaches
-    try {
+    // Wait a bit to ensure localStorage is updated
+    setTimeout(() => {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      console.log('User info from localStorage:', userInfo);
+      
+      if (!userInfo) {
+        console.error('No user info found in localStorage');
+        toast.error('Login failed - no user data found');
+        return;
+      }
+      
+      if (!userInfo.role) {
+        console.error('No role found in user info');
+        toast.error('Login failed - no role assigned');
+        return;
+      }
+      
+      console.log('User role:', userInfo.role);
+      
+      // Navigate based on role using React Router
       if (userInfo.role === 'admin') {
         console.log('Navigating to admin dashboard');
-        window.location.href = '/admin-dashboard';
+        navigate('/admin-dashboard');
       }
       else if (userInfo.role === 'teacher') {
         console.log('Navigating to teacher dashboard');
-        window.location.href = '/teacher-dashboard';
+        navigate('/teacher-dashboard');
       }
       else {
         console.log('Navigating to student dashboard');
-        window.location.href = '/student-dashboard';
+        navigate('/student-dashboard');
       }
-    } catch (error) {
-      console.error('Navigation failed:', error);
-      // Fallback to React Router
-      if (userInfo.role === 'admin') navigate('/admin-dashboard');
-      else if (userInfo.role === 'teacher') navigate('/teacher-dashboard');
-      else navigate('/student-dashboard');
-    }
+    }, 200); // Small delay to ensure state is updated
   };
    
   const handleForgotPassword = async () => {
@@ -248,15 +245,26 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit}>
               {!isLogin && (
-                <div className="input-group">
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full Name"
-                  />
-                </div>
+                <>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full Name"
+                    />
+                  </div>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      required
+                      value={batch}
+                      onChange={(e) => setBatch(e.target.value)}
+                      placeholder="Batch (e.g., Computer Science, Info Tech, etc.)"
+                    />
+                  </div>
+                </>
               )}
 
               <div className="input-group">
