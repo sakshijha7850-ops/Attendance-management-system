@@ -6,6 +6,12 @@ import toast from 'react-hot-toast';
 import api from "../services/api";
 import "./dashboard/TeacherDashboard.css";
 
+const EXAM_TYPES = [
+  { value: 'Minor 1', label: 'Minor 1', outOf: 25 },
+  { value: 'Minor 2', label: 'Minor 2', outOf: 25 },
+  { value: 'Major', label: 'End Sem (Major)', outOf: 30 },
+];
+
 export default function GiveMarks() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,8 +28,8 @@ export default function GiveMarks() {
   const [students, setStudents] = useState([]);
   const [marks, setMarks] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [outOf, setOutOf] = useState(100);
-  const [examTitle, setExamTitle] = useState('');
+  const [examType, setExamType] = useState('');
+  const [outOf, setOutOf] = useState(0);
 
   useEffect(() => {
     console.log('GiveMarks - Passed students:', passedStudents);
@@ -47,14 +53,22 @@ export default function GiveMarks() {
     }
   }, [passedStudents, selectedClass]);
 
+  const handleExamTypeChange = (value) => {
+    setExamType(value);
+    const config = EXAM_TYPES.find(e => e.value === value);
+    setOutOf(config ? config.outOf : 0);
+    // Reset marks when exam type changes
+    setMarks({});
+  };
+
   const handleMarkChange = (studentId, value) => {
     const num = value === '' ? '' : Math.min(Math.max(0, Number(value)), outOf);
     setMarks(prev => ({ ...prev, [studentId]: num }));
   };
 
   const handleSubmit = async () => {
-    if (!examTitle) {
-      toast.error('Please enter exam title');
+    if (!examType) {
+      toast.error('Please select exam type');
       return;
     }
 
@@ -66,6 +80,7 @@ export default function GiveMarks() {
           return api.post('/marks/assign', {
             studentId,
             subject: subjectName || 'General',
+            examType: examType,
             marks: mark
           });
         }
@@ -73,12 +88,12 @@ export default function GiveMarks() {
       });
 
       await Promise.all(promises);
-      toast.success('Marks assigned successfully!');
+      toast.success(`${examType} marks assigned successfully!`);
       setSubmitting(false);
       navigate('/teacher-dashboard');
     } catch (error) {
       console.error('Error assigning marks:', error);
-      toast.error('Failed to assign marks');
+      toast.error(error.response?.data?.message || 'Failed to assign marks');
       setSubmitting(false);
     }
   };
@@ -104,144 +119,151 @@ export default function GiveMarks() {
           </div>
         )}
 
-        {/* Exam Details */}
+        {/* Exam Type Selection */}
         <div style={{ marginBottom: '24px' }}>
-          <h3 style={{ color: '#e6edf3', marginBottom: '16px' }}>Exam Details</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: '#8b949e', fontSize: '14px' }}>
-                Exam Title
-              </label>
-              <input
-                type="text"
-                value={examTitle}
-                onChange={(e) => setExamTitle(e.target.value)}
-                placeholder=""
+          <h3 style={{ color: '#e6edf3', marginBottom: '16px' }}>Select Exam Type</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+            {EXAM_TYPES.map(exam => (
+              <button
+                key={exam.value}
+                onClick={() => handleExamTypeChange(exam.value)}
                 style={{
-                  width: '100%',
-                  padding: '10px',
-                  border: '1px solid #30363d',
-                  borderRadius: '6px',
-                  background: '#161b22',
-                  color: '#c9d1d9',
-                  fontSize: '14px'
+                  padding: '16px 12px',
+                  border: examType === exam.value ? '2px solid #6366f1' : '1px solid #30363d',
+                  borderRadius: '12px',
+                  background: examType === exam.value
+                    ? 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))'
+                    : '#161b22',
+                  color: examType === exam.value ? '#fff' : '#8b949e',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center',
+                  fontFamily: 'inherit'
                 }}
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', color: '#8b949e', fontSize: '14px' }}>
-                Total Marks
-              </label>
-              <input
-                type="number"
-                value={outOf}
-                onChange={(e) => setOutOf(Number(e.target.value))}
-                min="1"
-                max="1000"
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  border: '1px solid #30363d',
-                  borderRadius: '6px',
-                  background: '#161b22',
-                  color: '#c9d1d9',
-                  fontSize: '14px'
-                }}
-              />
-            </div>
+              >
+                <div style={{ 
+                  fontSize: '20px', marginBottom: '8px',
+                  filter: examType === exam.value ? 'none' : 'grayscale(0.5)'
+                }}>
+                  {exam.value === 'Minor 1' ? '📝' : exam.value === 'Minor 2' ? '📋' : '🎓'}
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
+                  {exam.label}
+                </div>
+                <div style={{ 
+                  fontSize: '12px', 
+                  color: examType === exam.value ? '#a78bfa' : '#64748b',
+                  fontWeight: '500'
+                }}>
+                  Out of {exam.outOf} marks
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Students List */}
-        <div style={{ marginBottom: '24px' }}>
-          <h3 style={{ color: '#e6edf3', marginBottom: '16px' }}>
-            Students ({students.length})
-          </h3>
-          
-          {students.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#8b949e' }}>
-              <Users size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-              <div>No students found</div>
-              <div style={{ fontSize: '14px', marginTop: '8px' }}>
-                Please make sure you have students in the selected class
-              </div>
+        {examType && (
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: '#e6edf3', margin: 0 }}>
+                Students ({students.length})
+              </h3>
+              <span style={{
+                padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600',
+                background: 'rgba(99,102,241,0.12)', color: '#818cf8'
+              }}>
+                {examType} — Out of {outOf}
+              </span>
             </div>
-          ) : (
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {students.map((student) => (
-                <div
-                  key={student._id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '12px',
-                    background: '#1e293b',
-                    borderRadius: '8px',
-                    marginBottom: '8px',
-                    border: '1px solid #30363d'
-                  }}
-                >
-                  <div>
-                    <div style={{ color: '#e6edf3', fontWeight: '500' }}>
-                      {student.name}
-                    </div>
-                    <div style={{ color: '#8b949e', fontSize: '12px' }}>
-                      {student.email}
-                    </div>
-                    {student.rollNumber && (
-                      <div style={{ color: '#8b949e', fontSize: '12px' }}>
-                        Roll: {student.rollNumber}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input
-                      type="number"
-                      value={marks[student._id] || ''}
-                      onChange={(e) => handleMarkChange(student._id, e.target.value)}
-                      placeholder="0"
-                      min="0"
-                      max={outOf}
-                      style={{
-                        width: '80px',
-                        padding: '6px',
-                        border: '1px solid #30363d',
-                        borderRadius: '4px',
-                        background: '#161b22',
-                        color: '#c9d1d9',
-                        fontSize: '14px',
-                        textAlign: 'center'
-                      }}
-                    />
-                    <span style={{ color: '#8b949e', fontSize: '12px' }}>
-                      / {outOf}
-                    </span>
-                  </div>
+            
+            {students.length === 0 ? (
+              <div style={{ padding: '40px', textAlign: 'center', color: '#8b949e' }}>
+                <Users size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                <div>No students found</div>
+                <div style={{ fontSize: '14px', marginTop: '8px' }}>
+                  Please make sure you have students in the selected class
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ) : (
+              <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                {students.map((student) => (
+                  <div
+                    key={student._id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '12px',
+                      background: '#1e293b',
+                      borderRadius: '8px',
+                      marginBottom: '8px',
+                      border: '1px solid #30363d'
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: '#e6edf3', fontWeight: '500' }}>
+                        {student.name}
+                      </div>
+                      <div style={{ color: '#8b949e', fontSize: '12px' }}>
+                        {student.email}
+                      </div>
+                      {student.rollNumber && (
+                        <div style={{ color: '#8b949e', fontSize: '12px' }}>
+                          Roll: {student.rollNumber}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <input
+                        type="number"
+                        value={marks[student._id] ?? ''}
+                        onChange={(e) => handleMarkChange(student._id, e.target.value)}
+                        placeholder="0"
+                        min="0"
+                        max={outOf}
+                        style={{
+                          width: '80px',
+                          padding: '6px',
+                          border: '1px solid #30363d',
+                          borderRadius: '4px',
+                          background: '#161b22',
+                          color: '#c9d1d9',
+                          fontSize: '14px',
+                          textAlign: 'center'
+                        }}
+                      />
+                      <span style={{ color: '#8b949e', fontSize: '12px' }}>
+                        / {outOf}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Submit Button */}
-        {students.length > 0 && (
+        {students.length > 0 && examType && (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               onClick={handleSubmit}
-              disabled={submitting || !examTitle}
+              disabled={submitting || !examType}
               style={{
                 padding: '12px 32px',
                 border: 'none',
                 borderRadius: '8px',
-                background: submitting || !examTitle ? '#6c757d' : '#10b981',
+                background: submitting || !examType ? '#6c757d' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                 color: 'white',
                 fontSize: '16px',
                 fontWeight: 'bold',
-                cursor: submitting || !examTitle ? 'not-allowed' : 'pointer',
+                cursor: submitting || !examType ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                boxShadow: submitting || !examType ? 'none' : '0 4px 15px rgba(99,102,241,0.3)',
+                transition: 'all 0.2s'
               }}
             >
               {submitting ? (
@@ -249,7 +271,7 @@ export default function GiveMarks() {
               ) : (
                 <>
                   <Save size={18} />
-                  Submit Marks
+                  Submit {examType} Marks
                 </>
               )}
             </button>

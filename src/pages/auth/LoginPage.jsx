@@ -111,7 +111,23 @@ export default function LoginPage() {
       }
     } else {
       console.log('Attempting registration...');
-      const res = await register(name, email, password, 'teacher', batch); // Pass teacher role and batch
+      // Auto-detect role based on email pattern
+      let detectedRole = 'student';
+      let detectedBatch = batch;
+      
+      if (!batch) {
+        // Check if email starts with numbers (student) or letters (teacher)
+        const isStudentEmail = /^\d+/.test(email.toLowerCase());
+        console.log('Email pattern check:', email, 'isStudent:', isStudentEmail);
+        
+        detectedRole = isStudentEmail ? 'student' : 'teacher';
+        
+        if (!isStudentEmail) {
+          detectedBatch = 'General'; // Teachers get General batch by default
+        }
+      }
+      
+      const res = await register(name, email, password, detectedRole, detectedBatch);
       console.log('Registration response:', res);
       if (res.success) {
         toast.success('Account created successfully');
@@ -261,7 +277,7 @@ export default function LoginPage() {
                       required
                       value={batch}
                       onChange={(e) => setBatch(e.target.value)}
-                      placeholder="Batch (e.g., Computer Science, Info Tech, etc.)"
+                      placeholder="Batch"
                     />
                   </div>
                 </>
